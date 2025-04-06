@@ -8,9 +8,8 @@ import ConnectWallet from "./ConnectWallet";
 const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
 const PINATA_JWT = import.meta.env.VITE_PINATA_JWT;
 
-// ✅ Upload data to IPFS
 const uploadToIPFS = async (data) => {
-  console.log("📤 Uploading to IPFS:", data);
+  console.log("Uploading to IPFS:", data);
 
   try {
     const formattedData = JSON.stringify(data, null, 2);
@@ -26,17 +25,14 @@ const uploadToIPFS = async (data) => {
     );
 
     if (!res.data?.IpfsHash) {
-      console.error("❌ IPFS upload failed:", res.data);
+      console.error("IPFS upload failed:", res.data);
       return null;
     }
 
-    console.log("✅ IPFS Hash:", res.data.IpfsHash);
+    console.log("IPFS Hash:", res.data.IpfsHash);
     return res.data.IpfsHash;
   } catch (error) {
-    console.error(
-      "❌ IPFS Upload Error:",
-      error.response?.data || error.message
-    );
+    console.error("IPFS Upload Error:", error.response?.data || error.message);
     return null;
   }
 };
@@ -60,13 +56,13 @@ function Registration() {
     setLoading(true);
 
     if (!account) {
-      alert("⚠️ Please connect your wallet first.");
+      alert("Please connect your wallet first.");
       setLoading(false);
       return;
     }
 
     if (!name || !age || (userType === "doctor" && !specialization)) {
-      alert("⚠️ Please fill in all required fields.");
+      alert("Please fill in all required fields.");
       setLoading(false);
       return;
     }
@@ -92,18 +88,18 @@ function Registration() {
       userData.licenseNumber = "";
     }
 
-    console.log("📌 User data:", userData);
+    console.log("User data:", userData);
 
     const ipfsHash = await uploadToIPFS(userData);
     if (!ipfsHash) {
-      alert("❌ IPFS upload failed! Try again.");
+      alert("IPFS upload failed! Try again.");
       setLoading(false);
       return;
     }
 
     try {
       if (!EHRContract?.abi) {
-        console.error("❌ ABI is missing or undefined.");
+        console.error("ABI is missing or undefined.");
         alert("Smart contract ABI is missing!");
         setLoading(false);
         return;
@@ -116,21 +112,21 @@ function Registration() {
 
       let tx;
       if (userType === "patient") {
-        console.log("📜 Registering patient...");
+        console.log("Registering patient...");
         tx = await contract.registerPatient(ipfsHash);
       } else {
-        console.log("📜 Registering doctor...");
+        console.log("Registering doctor...");
         tx = await contract.registerDoctor(ipfsHash, specialization);
       }
 
-      console.log("⏳ Sending transaction:", tx);
+      console.log("Sending transaction:", tx);
       await tx.wait();
-      console.log("✅ Transaction successful!");
+      console.log("Transaction successful!");
 
       alert("🎉 Registration successful!");
     } catch (error) {
-      console.error("❌ Registration failed:", error);
-      alert(`❌ Registration failed: ${error.message}`);
+      console.error("Registration failed:", error);
+      alert(`Registration failed: ${error.message}`);
     } finally {
       setLoading(false);
     }

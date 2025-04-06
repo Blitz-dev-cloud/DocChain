@@ -107,16 +107,13 @@ function DoctorDashboard() {
 
       console.log("Submitting new record:", newRecord);
 
-      // Upload record to IPFS first
       const ipfsHash = await uploadJSONToIPFS(newRecord);
       console.log("Record uploaded to IPFS with hash:", ipfsHash);
 
-      // Add record to blockchain
       await addMedicalRecord(ipfsHash, selectedPatient);
       setNewRecordText("");
       setRecordSuccess(true);
 
-      // Refresh patient records
       const recordHashes = await contract.getPatientRecords(selectedPatient);
       const records = await Promise.all(
         recordHashes.map(async (hash) => {
@@ -137,7 +134,6 @@ function DoctorDashboard() {
     }
   };
 
-  // New function to handle file uploads
   const handleFileUpload = async () => {
     if (!selectedPatient || !fileUpload || !fileDescription.trim()) {
       alert("Please select a patient, file, and enter a description");
@@ -148,11 +144,9 @@ function DoctorDashboard() {
       setUploadingFile(true);
       setFileSuccess(false);
 
-      // Upload file to IPFS
       const fileHash = await uploadToIPFS(fileUpload);
       console.log("File uploaded to IPFS with hash:", fileHash);
 
-      // Create record with file metadata
       const fileRecord = {
         text: fileDescription,
         date: new Date().toISOString(),
@@ -167,17 +161,13 @@ function DoctorDashboard() {
         fileHash: fileHash,
       };
 
-      // Upload record metadata to IPFS
       const ipfsHash = await uploadJSONToIPFS(fileRecord);
       console.log("File record uploaded to IPFS with hash:", ipfsHash);
 
-      // Add record to blockchain
       await addMedicalRecord(ipfsHash, selectedPatient);
       setFileUpload(null);
       setFileDescription("");
-      setFileSuccess(true);
 
-      // Refresh patient records
       const recordHashes = await contract.getPatientRecords(selectedPatient);
       const records = await Promise.all(
         recordHashes.map(async (hash) => {
@@ -198,7 +188,6 @@ function DoctorDashboard() {
     }
   };
 
-  // Render logic for loading, errors, and user role validation
   if (loading) {
     return (
       <div className="text-center mt-10 text-lg font-medium">
@@ -244,7 +233,7 @@ function DoctorDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-800">
       <Navbar />
 
       {/* Main Dashboard */}

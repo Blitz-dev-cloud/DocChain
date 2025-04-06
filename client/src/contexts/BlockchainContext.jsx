@@ -87,7 +87,6 @@ export const BlockchainProvider = ({ children, onRoleUpdate }) => {
       );
     }
 
-    // Remove 'Bearer ' prefix if it exists
     const jwt = pinataJWT.trim().startsWith("Bearer ")
       ? pinataJWT.trim().substring(7)
       : pinataJWT.trim();
@@ -102,11 +101,9 @@ export const BlockchainProvider = ({ children, onRoleUpdate }) => {
         throw new Error("Invalid JSON data provided");
       }
 
-      // Ensure jsonData is an object, not a string
       const dataToUpload =
         typeof jsonData === "string" ? JSON.parse(jsonData) : jsonData;
 
-      // Get clean JWT token (without 'Bearer ' prefix)
       const jwt = getCleanJWT();
 
       const requestBody = {
@@ -116,7 +113,6 @@ export const BlockchainProvider = ({ children, onRoleUpdate }) => {
         },
       };
 
-      // Debug output to see what's being sent
       console.log("Sending to Pinata:", JSON.stringify(requestBody));
 
       const response = await fetch(
@@ -131,23 +127,17 @@ export const BlockchainProvider = ({ children, onRoleUpdate }) => {
         }
       );
 
-      // Rest of function remains the same...
-
-      // Check for error responses
       if (!response.ok) {
         let errorMessage = `Pinata API error: ${response.status}`;
 
-        // Try to parse error response as JSON
         try {
           const errorData = await response.json();
           errorMessage += ` - ${JSON.stringify(errorData)}`;
         } catch (e) {
-          // If we can't parse as JSON, get the text instead
           try {
             const errorText = await response.text();
             errorMessage += ` - ${errorText}`;
           } catch (e2) {
-            // If that also fails, use a generic message
             errorMessage += " - Unable to parse error response";
           }
         }
@@ -168,18 +158,15 @@ export const BlockchainProvider = ({ children, onRoleUpdate }) => {
 
   const uploadToIPFS = async (file) => {
     try {
-      // Validate file
       if (!file || !(file instanceof File)) {
         throw new Error("Invalid file provided");
       }
 
-      // Get clean JWT token (without 'Bearer ' prefix)
       const jwt = getCleanJWT();
 
       const formData = new FormData();
       formData.append("file", file);
 
-      // Add metadata
       formData.append(
         "pinataMetadata",
         JSON.stringify({
@@ -198,7 +185,6 @@ export const BlockchainProvider = ({ children, onRoleUpdate }) => {
         }
       );
 
-      // Handle error responses
       if (!response.ok) {
         let errorMessage = `Pinata API error: ${response.status}`;
 
@@ -214,9 +200,7 @@ export const BlockchainProvider = ({ children, onRoleUpdate }) => {
           try {
             const errorText = await response.text();
             errorMessage += ` - ${errorText}`;
-          } catch (e) {
-            // Text parse failed
-          }
+          } catch (e) {}
         }
 
         throw new Error(errorMessage);

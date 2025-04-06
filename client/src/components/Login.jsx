@@ -21,12 +21,10 @@ function Login() {
     }
   };
 
-  // Use BlockchainContext's userType as the source of truth
   const displayRole = userType || userRole || "unregistered";
 
   useEffect(() => {
     const checkAndNavigate = async () => {
-      // Wait briefly to ensure state propagates
       await new Promise((resolve) => setTimeout(resolve, 500));
       if (displayRole === "patient") navigate("/patient");
       else if (displayRole === "doctor") navigate("/doctor");

@@ -24,7 +24,6 @@ export const HealthDataProvider = ({ children }) => {
   const pinataApiKey = import.meta.env.VITE_PINATA_API_KEY;
   const pinataSecretApiKey = import.meta.env.VITE_PINATA_SECRET_API_KEY;
 
-  // Sync userRole with BlockchainContext's userType
   useEffect(() => {
     setUserRole(userType);
     console.log(
@@ -70,7 +69,6 @@ export const HealthDataProvider = ({ children }) => {
         const data = await response.json();
         console.log("Successfully fetched data:", data);
 
-        // Check if this is a wrapper object with a data property containing another hash
         if (
           data &&
           data.data &&
@@ -81,7 +79,6 @@ export const HealthDataProvider = ({ children }) => {
             "Found nested IPFS hash, fetching actual content:",
             data.data
           );
-          // Recursive call to fetch the actual content
           return await fetchFromIPFS(data.data);
         }
 

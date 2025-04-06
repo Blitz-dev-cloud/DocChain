@@ -20,15 +20,13 @@ contract EHRContract {
     mapping(address => Doctor) private doctors;
     address[] private patientAddresses;
     address[] private doctorAddresses;
-    
-    // Events
+
     event PatientRegistered(address indexed patientAddress);
     event DoctorRegistered(address indexed doctorAddress);
     event MedicalRecordAdded(address indexed patientAddress, string ipfsHash);
     event AccessGranted(address indexed patientAddress, address indexed doctorAddress);
     event AccessRevoked(address indexed patientAddress, address indexed doctorAddress);
-    
-    // Modifiers
+
     modifier onlyPatient() {
         require(patients[msg.sender].exists, "Only registered patients can call this function");
         _;
@@ -46,8 +44,7 @@ contract EHRContract {
         );
         _;
     }
-    
-    // Registration functions
+
     function registerPatient(string memory _dataIPFSHash) public {
         require(!patients[msg.sender].exists, "Patient already registered");
         require(!doctors[msg.sender].exists, "Address already registered as doctor");
@@ -74,8 +71,7 @@ contract EHRContract {
         
         emit DoctorRegistered(msg.sender);
     }
-    
-    // Medical record functions
+
     function addMedicalRecord(address patientAddress, string memory ipfsHash) public authorizedForPatient(patientAddress) {
         require(patients[patientAddress].exists, "Patient does not exist");
         
@@ -123,8 +119,7 @@ contract EHRContract {
         
         emit AccessRevoked(msg.sender, doctorAddress);
     }
-    
-    // View functions
+
     function isPatient(address addr) public view returns (bool) {
         return patients[addr].exists;
     }
@@ -171,16 +166,14 @@ contract EHRContract {
             msg.sender == patientAddress || patients[patientAddress].authorizedDoctors[msg.sender],
             "Not authorized to access this information"
         );
-    
-        // Count authorized doctors first
+
         uint count = 0;
         for (uint i = 0; i < doctorAddresses.length; i++) {
             if (patients[patientAddress].authorizedDoctors[doctorAddresses[i]]) {
                 count++;
             }
         }
-    
-        // Create and fill the array
+
         address[] memory authorizedDocs = new address[](count);
         uint index = 0;
         for (uint i = 0; i < doctorAddresses.length; i++) {
