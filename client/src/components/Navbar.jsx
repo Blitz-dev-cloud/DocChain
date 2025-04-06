@@ -6,7 +6,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <a href="/" className="text-white text-2xl font-bold">
           <div className="flex flex-row justify-between items-center">
-            <img src="../public/navimg.png" className="h-[30px] mx-2" />{" "}
+            <img src="../navimg.png" className="h-[30px] mx-2" />{" "}
             DocChain
           </div>
         </a>
